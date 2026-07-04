@@ -4,11 +4,11 @@
 | Field | Value |
 |-------|-------|
 | **Current Phase** | 🏗️ Building — Week 1, Day 1 |
-| **Current Build Step** | Round 1, Step [10] — `scheduler/run_pipeline.py` |
-| **Current Priority** | Generate run_pipeline.py (Orchestrator) |
+| **Current Build Step** | Round 1, Step [11] — `bot/bot.py` |
+| **Current Priority** | Generate Telegram Bot |
 | **Current Blocker** | None |
-| **Next Artifact** | `05_CODE/scheduler/run_pipeline.py` |
-| **Project Health** | 🟢 Green — Architecture frozen, 9 steps complete |
+| **Next Artifact** | `05_CODE/bot/bot.py` |
+| **Project Health** | 🟢 Green — Architecture frozen, 10 steps complete |
 
 > If you only read one section, read this one. Then jump to Section 10 (Current Focus) and Section 13 (Quick AI Context).
 
@@ -29,7 +29,7 @@
 | **Vision** | Every builder wakes up knowing the best opportunity available today |
 | **Mission** | Discover valuable opportunities for builders. Deliver them to Telegram. Every day. |
 | **Current Phase** | Building |
-| **Current Milestone** | Week 1 — Pipeline foundation (DB + schema layer) |
+| **Current Milestone** | Week 1 — Pipeline Integration |
 | **North Star Metric** | Daily digest delivered automatically for 7 consecutive days (Success Criterion S1) |
 | **Last Updated** | 2026-07-04 |
 | **Project Status** | 🏗️ Building |
@@ -95,14 +95,14 @@ Telegram API (outbound only)
 | 6 | `scheduler/fetchers/github_trending.py` | ✅ Implemented | ✅ 21/21 | ✅ `6e27f79` | GitHub API → OpportunityRecord |
 | 7 | `scheduler/fetchers/huggingface.py` | ✅ Implemented | ✅ 16/16 | ✅ `44c2219` | HF scrape → OpportunityRecord |
 | 8 | `scheduler/scorer/score.py` | ✅ Implemented | ✅ 8/8 | ✅ `f10ede3` | Deterministic scoring formula |
-| 9 | `scheduler/notifier/telegram.py` | ✅ Implemented | ✅ 9/9 | ⬜ Pending | Format + send digest |
-| 10 | `scheduler/run_pipeline.py` | ⬜ **Next** | — | — | Orchestrator: fetch→score→store→send |
-| 11 | `bot/bot.py` | ⬜ | — | — | /today, /sources, /save, /wrong, /help |
+| 9 | `scheduler/notifier/telegram.py` | ✅ Implemented | ✅ 9/9 | ✅ `e73a4e2` | Format + send digest |
+| 10 | `scheduler/run_pipeline.py` | ✅ Implemented | ✅ 6/6 | ⬜ Pending | Orchestrator: fetch→score→store→send |
+| 11 | `bot/bot.py` | ⬜ **Next** | — | — | /today, /sources, /save, /wrong, /help |
 | 12 | `scheduler/Dockerfile` | ⬜ | — | — | Scheduler container image |
 | 13 | `bot/Dockerfile` | ⬜ | — | — | Bot container image |
 | 14 | `docker-compose.yml` | ⬜ | — | — | 3-container orchestration |
 
-**Progress: 9/14 implementation files complete (64%)**
+**Progress: 10/14 implementation files complete (71%)**
 
 ### Files That Must NEVER Be Modified Without CTO Approval
 
@@ -119,7 +119,7 @@ Telegram API (outbound only)
 | Phase | Name | Objective | Progress | Exit Criteria |
 |-------|------|-----------|----------|---------------|
 | 0 | Governance | Specs, ADRs, protocol, memory system | ✅ 100% | All 5 specs approved — DONE |
-| 1 | Foundation | DB + schema layer working | 🟡 64% | `python run_pipeline.py` stores rows |
+| 1 | Foundation | DB + schema layer working | 🟡 71% | `python run_pipeline.py` stores rows |
 | 2 | Telegram Delivery | Daily digest sent automatically | ⬜ 0% | Digest delivered at 08:00 for 1 day |
 | 3 | Hardening | Runs unattended for 30 days | ⬜ 0% | 7-day clean run, all S1–S8 criteria met |
 | 4 | Polish | Tests, docs, keyword tuning | ⬜ 0% | Stranger can set up in ≤ 30 min |
@@ -127,8 +127,8 @@ Telegram API (outbound only)
 ### Phase 1 Remaining Deliverables
 
 - `scheduler/notifier/telegram.py` ← **done**
-- `scheduler/run_pipeline.py` ← **current**
-- `scheduler/run_pipeline.py`
+- `scheduler/run_pipeline.py` ← **done**
+- `bot/bot.py` ← **current**
 - Week 1 exit: pipeline stores rows in DB
 
 ---
@@ -174,6 +174,7 @@ Redis · Celery · RabbitMQ · Kafka · LangGraph · CrewAI · Kubernetes
 | R9 — Hugging Face UI Structure Change | High | Medium | Isolate selectors. Fail gracefully. Return []. Never crash pipeline. |
 | R10 — Poor Opportunity Ranking | Medium | High | Use deterministic scoring (ADR 009). Debug with raw_metadata breakdown. |
 | R11 — Telegram Message Length Overflow | High | High | Telegram limit is 4096 chars. Mitigation: `split_message()` logic for multiple sends. Never truncate silently. |
+| R12 — Partial Pipeline Success | High | Medium | Fetchers may fail independently. Mitigation: Use `success`, `partial`, and `failed` statuses in `pipeline_runs`. Pipeline continues on individual fetcher failure. |
 
 ### Avoided Mistakes (by Protocol)
 
@@ -302,7 +303,8 @@ Digest floor:    40  (items below this are stored but never sent)
 | `tests/test_huggingface.py` | 16 | ✅ All passing | `fetchers/huggingface.py` — fetcher contract |
 | `tests/test_scorer.py` | 8 | ✅ All passing | `scorer/score.py` — deterministic formulas |
 | `tests/test_notifier.py` | 9 | ✅ All passing | `notifier/telegram.py` — formatting & constraints |
-| `tests/test_run_pipeline.py` | 0 | ⬜ Not created | Planned: Step 10 |
+| `tests/test_run_pipeline.py` | 6 | ✅ All passing | `run_pipeline.py` — mocked integration logic |
+| `tests/test_bot.py` | 0 | ⬜ Not created | Planned: Step 11 |
 
 ### Test Rules (ANTIGRAVITY_PROTOCOL Rule 3)
 
@@ -321,12 +323,12 @@ None currently.
 
 | Field | Value |
 |-------|-------|
-| **Working on** | `05_CODE/scheduler/run_pipeline.py` |
-| **Why it matters** | Orchestrates the entire flow (fetch -> score -> db -> deliver). First E2E test. |
-| **Expected output** | A script that runs the daily pipeline successfully. |
-| **Success criteria** | Safely integrates DB, fetchers, scorer, and notifier. Logs properly. |
+| **Working on** | `05_CODE/bot/bot.py` |
+| **Why it matters** | Allows users to interact with the system, see today's digest on demand, and provide feedback (/save, /wrong). |
+| **Expected output** | A running python-telegram-bot application. |
+| **Success criteria** | Handles the 5 MVP commands. Stores feedback to DB. Validates ALLOWED_USER_IDS. |
 | **Spec section** | MVP_SPEC.md |
-| **Protocol rule** | ANTIGRAVITY_PROTOCOL.md Rule 10.2, Round 1, Step [10] |
+| **Protocol rule** | ANTIGRAVITY_PROTOCOL.md Rule 10.2, Round 1, Step [11] |
 
 ---
 
@@ -334,10 +336,10 @@ None currently.
 
 | # | Action | Priority | Owner | Depends On | Effort |
 |---|--------|----------|-------|-----------|--------|
-| 1 | Generate `scheduler/run_pipeline.py` | 🔴 Now | Antigravity | Steps 2–9 | 3h |
-| 2 | Generate `tests/test_run_pipeline.py` | 🟡 After Step 1 | Antigravity | Step 10 | 2h |
-| 3 | Set TELEGRAM_BOT_TOKEN in .env | 🟡 Before E2E run | CTO | — | 5 min |
-| 4 | Run E2E Integration Test | 🟡 After Token | CTO / Antigravity | Steps 10, Token | 1h |
+| 1 | Generate `bot/bot.py` | 🔴 Now | Antigravity | Steps 2–10 | 2h |
+| 2 | Generate `tests/test_bot.py` | 🟡 After Step 1 | Antigravity | Step 11 | 2h |
+| 3 | Create Dockerfiles & docker-compose | 🟡 After bot.py | Antigravity | Steps 12–14 | 1h |
+| 4 | First Real Run | 🟡 After Docker | CTO | All | 1h |
 
 ---
 
@@ -347,7 +349,7 @@ None currently.
 |-----------|-------|--------|-------|
 | **Overall** | 9/10 | 🟢 Green | Governance mature, execution started |
 | **Architecture** | 10/10 | 🟢 Green | Frozen, well-documented, 5 ADRs |
-| **Code** | 9.5/10 | 🟢 Green | 9/14 files, 176/176 tests passing |
+| **Code** | 9.5/10 | 🟢 Green | 10/14 files, 182/182 tests passing |
 | **Data** | 9/10 | 🟢 Green | Schema complete, constraints enforced at DB level |
 | **Documentation** | 10/10 | 🟢 Green | Specs, ADRs, memory files all initialized |
 | **Technical Debt** | Low | 🟢 Green | No known shortcuts taken |
@@ -374,8 +376,8 @@ None currently.
 ### Current Build Position
 
 ```
-Round 1, Step [10] of 14
-File to generate: 05_CODE/scheduler/run_pipeline.py
+Round 1, Step [11] of 14
+File to generate: 05_CODE/bot/bot.py
 ```
 
 ### Files to Read First (in order)
@@ -413,17 +415,14 @@ None. Build can continue immediately.
 ### Next Expected Artifact
 
 ```
-05_CODE/scheduler/run_pipeline.py
+05_CODE/bot/bot.py
 ```
 
 This file must:
-- Initialize the database connection pool.
-- Invoke all 4 fetchers safely, aggregating OpportunityRecords.
-- Pass records to `score_and_rank()`.
-- Filter out records scoring < 40 using `filter_for_delivery()`.
-- Store ALL fetched records in the database via `db.client`.
-- Send the filtered records to Telegram via `send_digest()`.
-- Handle any global exceptions to ensure graceful exit.
+- Implement python-telegram-bot (v20+).
+- Implement commands: `/today`, `/sources`, `/save`, `/wrong`, `/help`.
+- Validate users against ALLOWED_USER_IDS to prevent unauthorized access.
+- Write to `opportunity_feedback` securely via `db_client`.
 
 ---
 
@@ -469,6 +468,8 @@ This file must:
 | 2026-07-04 | `ADR_010_telegram_delivery_strategy.md` added | Architecture guardrail | Telegram delivery strategy |
 | 2026-07-04 | `05_CODE/scheduler/notifier/telegram.py` committed | Round 1 Step [9] complete | Formats and sends digests |
 | 2026-07-04 | `test_notifier.py` committed | Round 1 Step [9] complete | Tested limits and overflow |
+| 2026-07-04 | `05_CODE/scheduler/run_pipeline.py` committed | Round 1 Step [10] complete | Dumb orchestrator implemented |
+| 2026-07-04 | `test_run_pipeline.py` committed | Round 1 Step [10] complete | Tested partial successes (R12) |
 
 ---
 
