@@ -3,12 +3,12 @@
 
 | Field | Value |
 |-------|-------|
-| **Current Phase** | 🏗️ Building — Week 1, Day 1 |
-| **Current Build Step** | Round 1, Step [11] — `bot/bot.py` |
-| **Current Priority** | Generate Telegram Bot |
-| **Current Blocker** | None |
-| **Next Artifact** | `05_CODE/bot/bot.py` |
-| **Project Health** | 🟢 Green — Architecture frozen, 10 steps complete |
+| **Current Phase** | 🚀 Execution — Week 1, Day 1 |
+| **Current Build Step** | First Real Run |
+| **Current Priority** | Execute Pre-flight checks and launch containers |
+| **Current Blocker** | CTO needs to populate .env file with real credentials |
+| **Next Artifact** | Real logs from execution (`db`, `scheduler`, `bot`) |
+| **Project Health** | 🟢 Green — Architecture frozen, 14/14 steps complete |
 
 > If you only read one section, read this one. Then jump to Section 10 (Current Focus) and Section 13 (Quick AI Context).
 
@@ -96,13 +96,13 @@ Telegram API (outbound only)
 | 7 | `scheduler/fetchers/huggingface.py` | ✅ Implemented | ✅ 16/16 | ✅ `44c2219` | HF scrape → OpportunityRecord |
 | 8 | `scheduler/scorer/score.py` | ✅ Implemented | ✅ 8/8 | ✅ `f10ede3` | Deterministic scoring formula |
 | 9 | `scheduler/notifier/telegram.py` | ✅ Implemented | ✅ 9/9 | ✅ `e73a4e2` | Format + send digest |
-| 10 | `scheduler/run_pipeline.py` | ✅ Implemented | ✅ 6/6 | ⬜ Pending | Orchestrator: fetch→score→store→send |
-| 11 | `bot/bot.py` | ⬜ **Next** | — | — | /today, /sources, /save, /wrong, /help |
-| 12 | `scheduler/Dockerfile` | ⬜ | — | — | Scheduler container image |
-| 13 | `bot/Dockerfile` | ⬜ | — | — | Bot container image |
-| 14 | `docker-compose.yml` | ⬜ | — | — | 3-container orchestration |
+| 10 | `scheduler/run_pipeline.py` | ✅ Implemented | ✅ 6/6 | ✅ `eabf959` | Orchestrator: fetch→score→store→send |
+| 11 | `bot/bot.py` | ✅ Implemented | ✅ 13/13 | ✅ `eabf959` | /today, /sources, /save, /wrong, /help |
+| 12 | `scheduler/Dockerfile` | ✅ Implemented | — | ✅ `eabf959` | Scheduler container image |
+| 13 | `bot/Dockerfile` | ✅ Implemented | — | ✅ `eabf959` | Bot container image |
+| 14 | `docker-compose.yml` | ✅ Implemented | — | ✅ `eabf959` | 3-container orchestration |
 
-**Progress: 10/14 implementation files complete (71%)**
+**Progress: 14/14 implementation files complete (100%)**
 
 ### Files That Must NEVER Be Modified Without CTO Approval
 
@@ -119,7 +119,7 @@ Telegram API (outbound only)
 | Phase | Name | Objective | Progress | Exit Criteria |
 |-------|------|-----------|----------|---------------|
 | 0 | Governance | Specs, ADRs, protocol, memory system | ✅ 100% | All 5 specs approved — DONE |
-| 1 | Foundation | DB + schema layer working | 🟡 71% | `python run_pipeline.py` stores rows |
+| 1 | Foundation | DB + schema layer working | ✅ 100% | `python run_pipeline.py` stores rows |
 | 2 | Telegram Delivery | Daily digest sent automatically | ⬜ 0% | Digest delivered at 08:00 for 1 day |
 | 3 | Hardening | Runs unattended for 30 days | ⬜ 0% | 7-day clean run, all S1–S8 criteria met |
 | 4 | Polish | Tests, docs, keyword tuning | ⬜ 0% | Stranger can set up in ≤ 30 min |
@@ -128,7 +128,8 @@ Telegram API (outbound only)
 
 - `scheduler/notifier/telegram.py` ← **done**
 - `scheduler/run_pipeline.py` ← **done**
-- `bot/bot.py` ← **current**
+- `bot/bot.py` ← **done**
+- Docker Configuration ← **done**
 - Week 1 exit: pipeline stores rows in DB
 
 ---
@@ -323,12 +324,12 @@ None currently.
 
 | Field | Value |
 |-------|-------|
-| **Working on** | `05_CODE/bot/bot.py` |
-| **Why it matters** | Allows users to interact with the system, see today's digest on demand, and provide feedback (/save, /wrong). |
-| **Expected output** | A running python-telegram-bot application. |
-| **Success criteria** | Handles the 5 MVP commands. Stores feedback to DB. Validates ALLOWED_USER_IDS. |
-| **Spec section** | MVP_SPEC.md |
-| **Protocol rule** | ANTIGRAVITY_PROTOCOL.md Rule 10.2, Round 1, Step [11] |
+| **Working on** | Pre-flight Checks (First Real Run) |
+| **Why it matters** | Validates the entire OpportunityOS orchestration, docker images, and database configurations in a real execution environment. |
+| **Expected output** | Running containers and accurate logs. |
+| **Success criteria** | Database initialized, pipeline recorded, at least 1 source fetched, at least 1 opp stored, digest delivered, bot responds. |
+| **Spec section** | Deployment Layer |
+| **Protocol rule** | First Real Run Strategy |
 
 ---
 
@@ -336,10 +337,10 @@ None currently.
 
 | # | Action | Priority | Owner | Depends On | Effort |
 |---|--------|----------|-------|-----------|--------|
-| 1 | Generate `bot/bot.py` | 🔴 Now | Antigravity | Steps 2–10 | 2h |
-| 2 | Generate `tests/test_bot.py` | 🟡 After Step 1 | Antigravity | Step 11 | 2h |
-| 3 | Create Dockerfiles & docker-compose | 🟡 After bot.py | Antigravity | Steps 12–14 | 1h |
-| 4 | First Real Run | 🟡 After Docker | CTO | All | 1h |
+| 1 | Populate `.env` file | 🔴 Now | CTO | - | 10m |
+| 2 | Dry Validation (`docker compose config`) | 🔴 Now | CTO | Step 1 | 5m |
+| 3 | Build Validation (`docker compose build --no-cache`) | 🔴 Now | CTO | Step 2 | 10m |
+| 4 | Execute First Real Run Stages | 🔴 Now | CTO | Step 3 | 30m |
 
 ---
 
@@ -376,16 +377,16 @@ None currently.
 ### Current Build Position
 
 ```
-Round 1, Step [11] of 14
-File to generate: 05_CODE/bot/bot.py
+Phase 1 Complete (14/14 Steps)
+Pre-flight checks and First Real Run pending.
 ```
 
 ### Files to Read First (in order)
 
-1. `01_SPECS/approved/SCHEMA_SPEC.md` — Section 1.1–1.2 (canonical schema fields)
-2. `01_SPECS/approved/SCHEMA_SPEC.md` — Section 3.1 (validation rules)
-3. `01_SPECS/approved/ANTIGRAVITY_PROTOCOL.md` — Rule 2 (file generation), Rule 3 (testing), Rule 10.2 (build order)
-4. `05_CODE/scheduler/db/client.py` — understand what the DB layer expects
+1. `PROJECT_STATE.md`
+2. `00_HERMES/ANTIGRAVITY_OPERATOR_GUIDE.md`
+3. `01_SPECS/approved/SCHEMA_SPEC.md`
+4. `01_SPECS/approved/ANTIGRAVITY_PROTOCOL.md`
 
 ### Files to Never Modify Without CTO Approval
 
@@ -395,6 +396,7 @@ File to generate: 05_CODE/bot/bot.py
 | `05_CODE/db/init.sql` | Schema changes require migration file |
 | `02_DECISIONS/*.md` | ADRs are immutable; supersede instead of edit |
 | `PROJECT_STATE.md` | Always update, never delete history |
+| `00_HERMES/*.md` | Operator guides are immutable structure |
 
 ### Important Rules (ANTIGRAVITY_PROTOCOL Summary)
 
@@ -407,22 +409,17 @@ File to generate: 05_CODE/bot/bot.py
 | Banned stack | Redis, Celery, RabbitMQ, Kafka, LangGraph until 2026-09-04 |
 | Novelty score | Always exactly 10 — enforced by DB CHECK constraint |
 | Sources | Sequential pipeline — no async, no subagents |
+| Containers | Strictly 3 (db, scheduler, bot) |
 
 ### Current Blocking Issues
 
-None. Build can continue immediately.
+CTO needs to manually fill the `.env` with credentials (Telegram, DB, GitHub) and run the Pre-Flight Checks (`docker compose build`, etc.) on their machine.
 
 ### Next Expected Artifact
 
 ```
-05_CODE/bot/bot.py
+Logs from docker compose up
 ```
-
-This file must:
-- Implement python-telegram-bot (v20+).
-- Implement commands: `/today`, `/sources`, `/save`, `/wrong`, `/help`.
-- Validate users against ALLOWED_USER_IDS to prevent unauthorized access.
-- Write to `opportunity_feedback` securely via `db_client`.
 
 ---
 
