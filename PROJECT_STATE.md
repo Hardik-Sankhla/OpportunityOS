@@ -4,11 +4,11 @@
 | Field | Value |
 |-------|-------|
 | **Current Phase** | 🚀 Execution — Week 1, Day 1 |
-| **Current Build Step** | First Real Run |
-| **Current Priority** | Execute Pre-flight checks and launch containers |
-| **Current Blocker** | CTO needs to populate .env file with real credentials |
-| **Next Artifact** | Real logs from execution (`db`, `scheduler`, `bot`) |
-| **Project Health** | 🟢 Green — Architecture frozen, 14/14 steps complete |
+| **Current Build Step** | Bot Validation & Credential Rotation |
+| **Current Priority** | Rotate compromised tokens in .env and start bot container |
+| **Current Blocker** | *None* |
+| **Next Artifact** | Real logs from bot container (`bot` execution logs) |
+| **Project Health** | 🟢 Green — First successful end-to-end pipeline run complete! |
 
 > If you only read one section, read this one. Then jump to Section 10 (Current Focus) and Section 13 (Quick AI Context).
 
@@ -324,12 +324,12 @@ None currently.
 
 | Field | Value |
 |-------|-------|
-| **Working on** | Pre-flight Checks (First Real Run) |
-| **Why it matters** | Validates the entire OpportunityOS orchestration, docker images, and database configurations in a real execution environment. |
-| **Expected output** | Running containers and accurate logs. |
-| **Success criteria** | Database initialized, pipeline recorded, at least 1 source fetched, at least 1 opp stored, digest delivered, bot responds. |
+| **Working on** | Rotation of exposed credentials & Bot service verification |
+| **Why it matters** | Ensures the application environment is secure after key exposures in the logs, and verifies Telegram commands |
+| **Expected output** | Clean bot replies to commands, rotated secrets in .env |
+| **Success criteria** | - Docker builds ✅<br>- Database connects ✅<br>- Pipeline runs ✅<br>- Opportunities stored ✅<br>- Digest generated ✅ |
 | **Spec section** | Deployment Layer |
-| **Protocol rule** | First Real Run Strategy |
+| **Protocol rule** | End-to-End Execution |
 
 ---
 
@@ -337,10 +337,11 @@ None currently.
 
 | # | Action | Priority | Owner | Depends On | Effort |
 |---|--------|----------|-------|-----------|--------|
-| 1 | Populate `.env` file | 🔴 Now | CTO | - | 10m |
-| 2 | Dry Validation (`docker compose config`) | 🔴 Now | CTO | Step 1 | 5m |
-| 3 | Build Validation (`docker compose build --no-cache`) | 🔴 Now | CTO | Step 2 | 10m |
-| 4 | Execute First Real Run Stages | 🔴 Now | CTO | Step 3 | 30m |
+| 1 | Database Startup (`docker compose up -d db`) | ✅ Done | CTO | - | 5m |
+| 2 | Scheduler Run (`docker compose up scheduler`) | ✅ Done | CTO | Step 1 | 15m |
+| 3 | Verification of logs & database entries | ✅ Done | CTO | Step 2 | 10m |
+| 4 | Rotate exposed credentials (.env updates) | 🔴 Now | CTO | Step 3 | 10m |
+| 5 | Verify Telegram Bot service commands | 🔴 Now | CTO | Step 4 | 15m |
 
 ---
 
@@ -438,6 +439,10 @@ Logs from docker compose up
 
 | Date | Change | Reason | Impact |
 |------|--------|--------|--------|
+| 2026-07-04 | Registered `psycopg2` dictionary adapters in client.py | Fix `can't adapt type 'dict'` runtime error on opportunities insertions | Runtime fix |
+| 2026-07-04 | Corrected `supercronic` SHA1 checksum in scheduler/Dockerfile | Resolve build failure due to checksum mismatch | Build validation fix |
+| 2026-07-04 | Aligned `httpx` to `>=0.26,<0.27` in requirements | Resolve build dependency conflict with python-telegram-bot | Build validation fix |
+| 2026-07-04 | Aligned db credentials and dynamic healthcheck | Prevent db connection and healthcheck failure | Config validation fix |
 | 2026-07-04 | Repository initialized, git init | Project start | Foundation |
 | 2026-07-04 | Phase 0 complete — 5 specs approved | CTO approval | Architecture frozen |
 | 2026-07-04 | 5 founding ADRs created (ADR_001–005) | Architecture decisions formalized | Baseline for all future changes |

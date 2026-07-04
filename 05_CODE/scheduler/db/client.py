@@ -26,7 +26,11 @@ from typing import Any, Generator
 
 import psycopg2
 from psycopg2 import pool
-from psycopg2.extras import RealDictCursor, execute_values
+from psycopg2.extensions import register_adapter
+from psycopg2.extras import Json, RealDictCursor, execute_values, register_default_jsonb
+
+# Automatically adapt python dicts to JSON for inserts
+register_adapter(dict, Json)
 
 logger = logging.getLogger(__name__)
 
@@ -66,6 +70,8 @@ def init_pool(minconn: int = 1, maxconn: int = 5) -> None:
 
     try:
         _pool = pool.ThreadedConnectionPool(minconn, maxconn, dsn=database_url)
+        # Register jsonb typecaster globally for selects
+        register_default_jsonb(globally=True)
         logger.info(f"[db] Connection pool initialized (min={minconn}, max={maxconn})")
     except psycopg2.OperationalError as e:
         logger.error(f"[db] Failed to connect to database: {e}")
