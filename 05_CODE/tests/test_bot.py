@@ -26,6 +26,9 @@ from bot import (
     command_sources,
     command_save,
     command_wrong,
+    command_building,
+    command_applied,
+    command_won,
     command_help
 )
 
@@ -226,4 +229,34 @@ async def test_command_wrong_success(mock_update_context, mock_db):
     await command_wrong(update, context)
     
     update.message.reply_text.assert_called_once_with("✅ Marked wrong opportunity 20.")
+    assert mock_db.execute.call_count == 2
+
+
+@pytest.mark.asyncio
+async def test_command_building_success(mock_update_context, mock_db):
+    update, context = mock_update_context
+    context.args = ["30"]
+    mock_db.fetch_one.side_effect = [{"1": 1}, {"id": 30}, None]
+    await command_building(update, context)
+    update.message.reply_text.assert_called_once_with("✅ Marked as building opportunity 30.")
+    assert mock_db.execute.call_count == 2
+
+
+@pytest.mark.asyncio
+async def test_command_applied_success(mock_update_context, mock_db):
+    update, context = mock_update_context
+    context.args = ["40"]
+    mock_db.fetch_one.side_effect = [{"1": 1}, {"id": 40}, None]
+    await command_applied(update, context)
+    update.message.reply_text.assert_called_once_with("✅ Marked as applied opportunity 40.")
+    assert mock_db.execute.call_count == 2
+
+
+@pytest.mark.asyncio
+async def test_command_won_success(mock_update_context, mock_db):
+    update, context = mock_update_context
+    context.args = ["50"]
+    mock_db.fetch_one.side_effect = [{"1": 1}, {"id": 50}, None]
+    await command_won(update, context)
+    update.message.reply_text.assert_called_once_with("✅ Marked as won opportunity 50.")
     assert mock_db.execute.call_count == 2

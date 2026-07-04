@@ -135,7 +135,7 @@ async def command_sources(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
 
 
 async def _handle_feedback(update: Update, context: ContextTypes.DEFAULT_TYPE, signal: str) -> None:
-    """Internal helper to process /save and /wrong commands idempotently."""
+    """Internal helper to process feedback commands idempotently."""
     if not context.args:
         await update.message.reply_text(f"Please provide an ID. Example: /{signal} 123")
         return
@@ -147,6 +147,22 @@ async def _handle_feedback(update: Update, context: ContextTypes.DEFAULT_TYPE, s
         
     opp_id = int(opp_id_str)
     user_id = update.effective_user.id
+    
+    action_map = {
+        "saved": "saved",
+        "wrong": "marked wrong",
+        "building": "marked as building",
+        "applied": "marked as applied",
+        "won": "marked as won"
+    }
+    
+    column_map = {
+        "saved": "outcome_saved_count",
+        "wrong": "outcome_wrong_count",
+        "building": "outcome_building_count",
+        "applied": "outcome_applied_count",
+        "won": "outcome_won_count"
+    }
     
     try:
         # Verify opportunity exists
@@ -163,7 +179,7 @@ async def _handle_feedback(update: Update, context: ContextTypes.DEFAULT_TYPE, s
         )
         
         if existing:
-            action = "saved" if signal == "saved" else "marked wrong"
+            action = action_map.get(signal, signal)
             await update.message.reply_text(f"User already {action} this opportunity.")
             return
             
@@ -175,14 +191,15 @@ async def _handle_feedback(update: Update, context: ContextTypes.DEFAULT_TYPE, s
         )
         
         # Denormalize count
-        col = "outcome_saved_count" if signal == "saved" else "outcome_wrong_count"
-        db_client.execute(
-            f"UPDATE opportunities SET {col} = {col} + 1 WHERE id = %s",
-            (opp_id,)
-        )
+        col = column_map.get(signal)
+        if col:
+            db_client.execute(
+                f"UPDATE opportunities SET {col} = {col} + 1 WHERE id = %s",
+                (opp_id,)
+            )
         
-        action = "Saved" if signal == "saved" else "Marked wrong"
-        await update.message.reply_text(f"✅ {action} opportunity {opp_id}.")
+        action_label = action_map.get(signal, signal).capitalize()
+        await update.message.reply_text(f"✅ {action_label} opportunity {opp_id}.")
         
     except Exception as e:
         logger.error(f"Error in /{signal}: {e}")
@@ -201,6 +218,24 @@ async def command_wrong(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     await _handle_feedback(update, context, "wrong")
 
 
+@require_db
+async def command_building(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """/building <id> — Marks an opportunity as building."""
+    await _handle_feedback(update, context, "building")
+
+
+@require_db
+async def command_applied(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """/applied <id> — Marks an opportunity as applied."""
+    await _handle_feedback(update, context, "applied")
+
+
+@require_db
+async def command_won(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """/won <id> — Marks an opportunity as won."""
+    await _handle_feedback(update, context, "won")
+
+
 async def command_help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """/help — Static text. No dynamic generation."""
     if not is_authorized(update.effective_user.id):
@@ -212,6 +247,9 @@ async def command_help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         "/sources - Check health of all sources\n"
         "/save &lt;id&gt; - Mark an opportunity as valuable\n"
         "/wrong &lt;id&gt; - Mark an opportunity as irrelevant\n"
+        "/building &lt;id&gt; - Mark an opportunity as building\n"
+        "/applied &lt;id&gt; - Mark an opportunity as applied\n"
+        "/won &lt;id&gt; - Mark an opportunity as won\n"
         "/help - Show this message\n"
     )
     await update.message.reply_html(text)
@@ -238,6 +276,9 @@ def main() -> None:
     application.add_handler(CommandHandler("sources", command_sources))
     application.add_handler(CommandHandler("save", command_save))
     application.add_handler(CommandHandler("wrong", command_wrong))
+    application.add_handler(CommandHandler("building", command_building))
+    application.add_handler(CommandHandler("applied", command_applied))
+    application.add_handler(CommandHandler("won", command_won))
     application.add_handler(CommandHandler("help", command_help))
 
     logger.info("Bot is starting polling...")

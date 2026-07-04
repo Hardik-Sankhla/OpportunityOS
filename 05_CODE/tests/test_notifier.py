@@ -99,7 +99,7 @@ def test_send_message_success(mock_post):
     assert mock_post.call_args[1]["json"]["text"] == "Hello World"
 
 
-@patch.dict(os.environ, {})
+@patch.dict(os.environ, {}, clear=True)
 def test_send_message_fails_gracefully_without_token():
     assert send_message("Hello World") is False
 

@@ -343,6 +343,7 @@ None currently.
 | 4 | Rotate exposed credentials (.env updates) | [/] In Progress | CTO | Step 3 | 10m |
 | 5 | Verify Telegram Bot service commands | ✅ Done | CTO | Step 4 | 15m |
 | 6 | Generate First Deployment Report | ✅ Done | CTO | Step 5 | 10m |
+| 7 | Deploy and verify interactive signals (/building, /applied, /won) | 🔴 Now | CTO | Step 6 | 15m |
 
 ---
 
@@ -440,6 +441,7 @@ Logs from docker compose up
 
 | Date | Change | Reason | Impact |
 |------|--------|--------|--------|
+| 2026-07-04 | Implemented interactive feedback commands and test coverage | Complete the Feedback Intelligence Layer (Sprint 2) supporting /building, /applied, /won | Feedback features live |
 | 2026-07-04 | Added `BUGFIX_001_DUPLICATE_OPPORTUNITIES.md` and patched pipeline | Resolve unique constraint violation errors on duplicate opportunity inserts | Integration testing fix |
 | 2026-07-04 | Added UI_AUDIT.md | Capture future OpportunityOS Terminal design language and dashboard concepts | No MVP functionality affected. Future Phase 2+ reference |
 | 2026-07-04 | Downgraded Docker base image to `python:3.12-slim` | Fix `python-telegram-bot` 20.8 runtime crash on Python 3.13 | Bot compatibility fix |
