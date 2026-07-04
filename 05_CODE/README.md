@@ -17,8 +17,8 @@ Files are generated in strict dependency order. No step may be skipped.
 | 3 | `scheduler/schemas/opportunity.py` | ✅ Done | Nothing |
 | 4 | `scheduler/fetchers/arxiv.py` | ✅ Done | Steps 2, 3 |
 | 5 | `scheduler/fetchers/devpost.py` | ✅ Done | Steps 2, 3 |
-| 6 | `scheduler/fetchers/github_trending.py` | ⬜ Next | Steps 2, 3 |
-| 7 | `scheduler/fetchers/huggingface.py` | ⬜ | Steps 2, 3 |
+| 6 | `scheduler/fetchers/github_trending.py` | ✅ Done | Steps 2, 3 |
+| 7 | `scheduler/fetchers/huggingface.py` | ⬜ Next | Steps 2, 3 |
 | 8 | `scheduler/scorer/score.py` | ⬜ | Step 3 |
 | 9 | `scheduler/notifier/telegram.py` | ⬜ | Steps 2, 3 |
 | 10 | `scheduler/run_pipeline.py` | ⬜ | Steps 2–9 |

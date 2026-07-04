@@ -4,11 +4,11 @@
 | Field | Value |
 |-------|-------|
 | **Current Phase** | 🏗️ Building — Week 1, Day 1 |
-| **Current Build Step** | Round 1, Step [6] of 14 — `scheduler/fetchers/github_trending.py` |
-| **Current Priority** | Generate scheduler/fetchers/github_trending.py |
+| **Current Build Step** | Round 1, Step [7] of 14 — `scheduler/fetchers/huggingface.py` |
+| **Current Priority** | Generate scheduler/fetchers/huggingface.py |
 | **Current Blocker** | None |
-| **Next Artifact** | `05_CODE/scheduler/fetchers/github_trending.py` |
-| **Project Health** | 🟢 Green — Architecture frozen, 5 steps complete |
+| **Next Artifact** | `05_CODE/scheduler/fetchers/huggingface.py` |
+| **Project Health** | 🟢 Green — Architecture frozen, 6 steps complete |
 
 > If you only read one section, read this one. Then jump to Section 10 (Current Focus) and Section 13 (Quick AI Context).
 
@@ -92,8 +92,8 @@ Telegram API (outbound only)
 | 3 | `scheduler/schemas/opportunity.py` | ✅ Implemented | ✅ 42/42 | ✅ `72d2eb6` | Canonical OpportunityRecord dataclass |
 | 4 | `scheduler/fetchers/arxiv.py` | ✅ Implemented | ✅ 38/38 | ✅ `0d95e83` | Arxiv RSS → OpportunityRecord |
 | 5 | `scheduler/fetchers/devpost.py` | ✅ Implemented | ✅ 18/18 | ✅ `82f2b64` | Devpost RSS → OpportunityRecord |
-| 6 | `scheduler/fetchers/github_trending.py` | ⬜ **Next** | — | — | GitHub API → OpportunityRecord |
-| 7 | `scheduler/fetchers/huggingface.py` | ⬜ | — | — | HF scrape → OpportunityRecord |
+| 6 | `scheduler/fetchers/github_trending.py` | ✅ Implemented | ✅ 21/21 | ✅ `6e27f79` | GitHub API → OpportunityRecord |
+| 7 | `scheduler/fetchers/huggingface.py` | ⬜ **Next** | — | — | HF scrape → OpportunityRecord |
 | 8 | `scheduler/scorer/score.py` | ⬜ | — | — | Deterministic scoring formula |
 | 9 | `scheduler/notifier/telegram.py` | ⬜ | — | — | Format + send digest |
 | 10 | `scheduler/run_pipeline.py` | ⬜ | — | — | Orchestrator: fetch→score→store→send |
@@ -102,7 +102,7 @@ Telegram API (outbound only)
 | 13 | `bot/Dockerfile` | ⬜ | — | — | Bot container image |
 | 14 | `docker-compose.yml` | ⬜ | — | — | 3-container orchestration |
 
-**Progress: 5/14 implementation files complete (36%)**
+**Progress: 6/14 implementation files complete (43%)**
 
 ### Files That Must NEVER Be Modified Without CTO Approval
 
@@ -119,14 +119,14 @@ Telegram API (outbound only)
 | Phase | Name | Objective | Progress | Exit Criteria |
 |-------|------|-----------|----------|---------------|
 | 0 | Governance | Specs, ADRs, protocol, memory system | ✅ 100% | All 5 specs approved — DONE |
-| 1 | Foundation | DB + schema layer working | 🟡 36% | `python run_pipeline.py` stores rows |
+| 1 | Foundation | DB + schema layer working | 🟡 43% | `python run_pipeline.py` stores rows |
 | 2 | Telegram Delivery | Daily digest sent automatically | ⬜ 0% | Digest delivered at 08:00 for 1 day |
 | 3 | Hardening | Runs unattended for 30 days | ⬜ 0% | 7-day clean run, all S1–S8 criteria met |
 | 4 | Polish | Tests, docs, keyword tuning | ⬜ 0% | Stranger can set up in ≤ 30 min |
 
 ### Phase 1 Remaining Deliverables
 
-- `scheduler/fetchers/github_trending.py` ← **current**
+- `scheduler/fetchers/huggingface.py` ← **current**
 - 4 fetchers (arxiv, devpost, github, huggingface)
 - `scheduler/scorer/score.py`
 - `scheduler/notifier/telegram.py`
@@ -173,6 +173,7 @@ Redis · Celery · RabbitMQ · Kafka · LangGraph · CrewAI · Kubernetes
 | R6 — Score formula poor quality | Medium | Medium | Week 4 manual audit + keyword tuning |
 | R7 — Source Data Quality Drift | High | High | Skip bad records. Log failure. Continue pipeline. Never crash fetch(). |
 | R8 — GitHub Rate Limit Exhaustion | Medium | High | Token if available. Request caching later. Fail gracefully, return []. Never crash pipeline. |
+| R9 — Hugging Face UI Structure Change | High | Medium | Isolate selectors. Fail gracefully. Return []. Never crash pipeline. |
 
 ### Avoided Mistakes (by Protocol)
 
@@ -297,7 +298,8 @@ Digest floor:    40  (items below this are stored but never sent)
 | `tests/test_schemas.py` | 42 | ✅ All passing | `schemas/opportunity.py` — validation |
 | `tests/test_arxiv.py` | 38 | ✅ All passing | `fetchers/arxiv.py` — fetcher contract |
 | `tests/test_devpost.py` | 18 | ✅ All passing | `fetchers/devpost.py` — fetcher contract |
-| `tests/test_github_trending.py` | 0 | ⬜ Not created | Planned: Step 6 |
+| `tests/test_github_trending.py` | 21 | ✅ All passing | `fetchers/github_trending.py` — fetcher contract |
+| `tests/test_huggingface.py` | 0 | ⬜ Not created | Planned: Step 7 |
 | `tests/test_scorer.py` | 0 | ⬜ Not created | Planned: Step 8 |
 | `tests/test_notifier.py` | 0 | ⬜ Not created | Planned: Step 9 |
 
@@ -318,12 +320,12 @@ None currently.
 
 | Field | Value |
 |-------|-------|
-| **Working on** | `05_CODE/scheduler/fetchers/github_trending.py` |
-| **Why it matters** | GitHub is the primary source of actionable tools and repositories. Validates handling of JSON REST APIs and authentication. |
+| **Working on** | `05_CODE/scheduler/fetchers/huggingface.py` |
+| **Why it matters** | Hugging Face is critical for AI models, datasets, and spaces. Validates HTML scraping without browser automation. |
 | **Expected output** | `fetch() -> list[OpportunityRecord]` |
-| **Success criteria** | Fetcher Contract v1 compliance. Must work with or without GITHUB_TOKEN. Gracefully handles rate limits. |
-| **Spec section** | SCHEMA_SPEC.md Section 2 (Source Mappings), ADR_007 |
-| **Protocol rule** | ANTIGRAVITY_PROTOCOL.md Rule 10.2, Round 1, Step [6] |
+| **Success criteria** | Fetcher Contract v1 compliance. Scraping logic is isolated. Gracefully returns [] when UI changes break selectors. |
+| **Spec section** | SCHEMA_SPEC.md Section 2 (Source Mappings), ADR_008 |
+| **Protocol rule** | ANTIGRAVITY_PROTOCOL.md Rule 10.2, Round 1, Step [7] |
 
 ---
 
@@ -331,9 +333,9 @@ None currently.
 
 | # | Action | Priority | Owner | Depends On | Effort |
 |---|--------|----------|-------|-----------|--------|
-| 1 | Generate `scheduler/fetchers/github_trending.py` | 🔴 Now | Antigravity | Steps 2, 3 | 3h |
-| 2 | Generate `tests/test_github_trending.py` | 🔴 Now | Antigravity | Step 6 | 1h |
-| 3 | Generate `scheduler/fetchers/huggingface.py` | 🔴 High | Antigravity | Steps 2, 3 | 3–4h |
+| 1 | Generate `scheduler/fetchers/huggingface.py` | 🔴 Now | Antigravity | Steps 2, 3 | 3h |
+| 2 | Generate `tests/test_huggingface.py` | 🔴 Now | Antigravity | Step 7 | 1h |
+| 3 | Create `FETCHER_AUDIT.md` | 🟡 After Step 7 | Antigravity | Steps 4–7 | 1h |
 | 6 | Generate `scheduler/fetchers/huggingface.py` | 🔴 High | Antigravity | Steps 2, 3 | 3–4h |
 | 7 | Generate `scheduler/scorer/score.py` | 🟡 After fetchers | Antigravity | Step 3 | 2h |
 | 8 | Set TELEGRAM_BOT_TOKEN in .env | 🟡 Before Step 9 | CTO | — | 5 min |
@@ -348,7 +350,7 @@ None currently.
 |-----------|-------|--------|-------|
 | **Overall** | 9/10 | 🟢 Green | Governance mature, execution started |
 | **Architecture** | 10/10 | 🟢 Green | Frozen, well-documented, 5 ADRs |
-| **Code** | 9/10 | 🟢 Green | 5/14 files, 122/122 tests passing |
+| **Code** | 9.5/10 | 🟢 Green | 6/14 files, 143/143 tests passing |
 | **Data** | 9/10 | 🟢 Green | Schema complete, constraints enforced at DB level |
 | **Documentation** | 10/10 | 🟢 Green | Specs, ADRs, memory files all initialized |
 | **Technical Debt** | Low | 🟢 Green | No known shortcuts taken |
@@ -375,8 +377,8 @@ None currently.
 ### Current Build Position
 
 ```
-Round 1, Step [6] of 14
-File to generate: 05_CODE/scheduler/fetchers/github_trending.py
+Round 1, Step [7] of 14
+File to generate: 05_CODE/scheduler/fetchers/huggingface.py
 ```
 
 ### Files to Read First (in order)
@@ -414,17 +416,15 @@ None. Build can continue immediately.
 ### Next Expected Artifact
 
 ```
-05_CODE/scheduler/fetchers/github_trending.py
+05_CODE/scheduler/fetchers/huggingface.py
 ```
 
 This file must:
 - Follow Fetcher Contract v1
-- Use GitHub Search API for new trending repos
-- Handle GITHUB_TOKEN if available, without crashing if missing
-- Skip bad records and continue
-- Not hit the database or external APIS other than GitHub
-- Map to opportunity_type="tool", actionability_tier="use"
-- Store raw_metadata: language, stars, forks, watchers
+- Use `httpx` and `BeautifulSoup` for HTML scraping (NO browser automation)
+- Isolate selectors and extraction logic
+- Map Models/Spaces to tool/use, Datasets to dataset/use
+- Catch scraping exceptions, log failures, return [] on feed failure
 - Stay under 500 lines
 
 ---
@@ -458,6 +458,9 @@ This file must:
 | 2026-07-04 | `ADR_006_fetchers_must_be_pure.md` added | Architecture guardrail | Ensured fetcher contract purity |
 | 2026-07-04 | `05_CODE/scheduler/fetchers/devpost.py` committed | Round 1 Step [5] complete | Second fetcher implemented |
 | 2026-07-04 | `test_devpost.py` committed | Round 1 Step [5] complete | Tested fetcher edge cases |
+| 2026-07-04 | `ADR_007_github_source_strategy.md` added | Architecture guardrail | Selected Search API |
+| 2026-07-04 | `05_CODE/scheduler/fetchers/github_trending.py` committed | Round 1 Step [6] complete | Third fetcher implemented |
+| 2026-07-04 | `test_github_trending.py` committed | Round 1 Step [6] complete | Tested API and token logic |
 
 ---
 
