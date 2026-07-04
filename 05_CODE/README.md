@@ -20,8 +20,8 @@ Files are generated in strict dependency order. No step may be skipped.
 | 6 | `scheduler/fetchers/github_trending.py` | ✅ Done | Steps 2, 3 |
 | 7 | `scheduler/fetchers/huggingface.py` | ✅ Done | Steps 2, 3 |
 | 8 | `scheduler/scorer/score.py` | ✅ Done | Step 3 |
-| 9 | `scheduler/notifier/telegram.py` | ⬜ Next | Steps 2, 3 |
-| 10 | `scheduler/run_pipeline.py` | ⬜ | Steps 2–9 |
+| 9 | `scheduler/notifier/telegram.py` | ✅ Done | Steps 2, 3 |
+| 10 | `scheduler/run_pipeline.py` | ⬜ Next | Steps 2–9 |
 | 11 | `bot/bot.py` | ⬜ | Steps 2, 3 |
 | 12 | `scheduler/Dockerfile` | ⬜ | Step 10 |
 | 13 | `bot/Dockerfile` | ⬜ | Step 11 |
