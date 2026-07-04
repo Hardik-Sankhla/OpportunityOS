@@ -23,9 +23,9 @@ Files are generated in strict dependency order. No step may be skipped.
 | 9 | `scheduler/notifier/telegram.py` | ✅ Done | Steps 2, 3 |
 | 10 | `scheduler/run_pipeline.py` | ✅ Done | Steps 2–9 |
 | 11 | `bot/bot.py` | ✅ Done | Steps 2, 3 |
-| 12 | `scheduler/Dockerfile` | ⬜ Next | Step 10 |
-| 13 | `bot/Dockerfile` | ⬜ | Step 11 |
-| 14 | `docker-compose.yml` (root) | ⬜ | Steps 12, 13 |
+| 12 | `scheduler/Dockerfile` | ✅ Done | Step 10 |
+| 13 | `bot/Dockerfile` | ✅ Done | Step 11 |
+| 14 | `docker-compose.yml` (root) | ✅ Done | Steps 12, 13 |
 
 ---
 
