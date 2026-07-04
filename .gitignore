@@ -1,0 +1,46 @@
+# =============================================================================
+# OpportunityOS — .gitignore
+# =============================================================================
+
+# Secrets — NEVER commit
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+*.xml
+
+# Logs
+*.log
+
+# Runtime memory files (per MEMORY_SPEC.md — committed as .md, not .json)
+03_MEMORY/*.json
+03_MEMORY/*.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Docker
+.docker/
+
+# Virtual environments
+venv/
+.venv/
+env/
