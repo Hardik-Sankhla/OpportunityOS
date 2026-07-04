@@ -3,12 +3,12 @@
 
 | Field | Value |
 |-------|-------|
-| **Current Phase** | 🚀 Execution — Week 1, Day 1 |
-| **Current Build Step** | Deployment Completed (Step 6 Complete) |
-| **Current Priority** | Rotate exposed credentials in .env |
+| **Current Phase** | 🧪 Integration Testing — Week 1, Day 1 |
+| **Current Build Step** | Database Idempotency (Bug #001) |
+| **Current Priority** | Rebuild container with idempotency fix and test end-to-end |
 | **Current Blocker** | *None* |
-| **Next Artifact** | *None* |
-| **Project Health** | 🟢 Green — Deployment complete & verified healthy! |
+| **Next Artifact** | Bugfix Document (`BUGFIX_001_DUPLICATE_OPPORTUNITIES.md`) |
+| **Project Health** | 🟢 Green — Code builds, DB schema and bot are stable. |
 
 > If you only read one section, read this one. Then jump to Section 10 (Current Focus) and Section 13 (Quick AI Context).
 
@@ -28,11 +28,11 @@
 | **Project Name** | OpportunityOS |
 | **Vision** | Every builder wakes up knowing the best opportunity available today |
 | **Mission** | Discover valuable opportunities for builders. Deliver them to Telegram. Every day. |
-| **Current Phase** | Building |
+| **Current Phase** | Integration Testing |
 | **Current Milestone** | Week 1 — Pipeline Integration |
 | **North Star Metric** | Daily digest delivered automatically for 7 consecutive days (Success Criterion S1) |
 | **Last Updated** | 2026-07-04 |
-| **Project Status** | 🏗️ Building |
+| **Project Status** | 🧪 Integration Testing |
 | **Architecture Freeze** | ✅ Active since 2026-07-04 |
 | **Repo Location** | `d:\github\OpportunityOS\` |
 | **Git Branch** | `main` |
@@ -440,6 +440,7 @@ Logs from docker compose up
 
 | Date | Change | Reason | Impact |
 |------|--------|--------|--------|
+| 2026-07-04 | Added `BUGFIX_001_DUPLICATE_OPPORTUNITIES.md` and patched pipeline | Resolve unique constraint violation errors on duplicate opportunity inserts | Integration testing fix |
 | 2026-07-04 | Added UI_AUDIT.md | Capture future OpportunityOS Terminal design language and dashboard concepts | No MVP functionality affected. Future Phase 2+ reference |
 | 2026-07-04 | Downgraded Docker base image to `python:3.12-slim` | Fix `python-telegram-bot` 20.8 runtime crash on Python 3.13 | Bot compatibility fix |
 | 2026-07-04 | Started Telegram Bot container and verified polling startup | Verification of command responses pending | Bot validation startup |

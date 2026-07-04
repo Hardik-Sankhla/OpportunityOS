@@ -152,21 +152,28 @@ def _store_records(records: list[OpportunityRecord]) -> None:
     # Generate %s placeholder string
     placeholders = ", ".join(["%s"] * len(columns))
     
-    query = f"INSERT INTO opportunities ({col_str}) VALUES ({placeholders})"
+    query = f"INSERT INTO opportunities ({col_str}) VALUES ({placeholders}) ON CONFLICT (url_hash) DO NOTHING"
     
     rows = []
     for r in records:
         d = r.to_db_dict()
         rows.append(tuple(d[c] for c in columns))
         
-    # We execute row by row or bulk. Since we want to ignore conflicts if they somehow happen,
-    # actually our client doesn't do ON CONFLICT yet, but we already deduped.
-    # We will use db_client.execute for each, to ensure one bad record doesn't block all.
+    inserted_count = 0
+    duplicate_count = 0
+    
     for row in rows:
         try:
-            db_client.execute(query, row)
+            affected = db_client.execute(query, row)
+            if affected == 0:
+                duplicate_count += 1
+            else:
+                inserted_count += 1
         except Exception as e:
             logger.error(f"Failed to insert record: {e}")
+            
+    if duplicate_count > 0:
+        logger.info(f"Skipped {duplicate_count} duplicate opportunities (ON CONFLICT DO NOTHING)")
 
 
 def _update_pipeline_run(run_id: int, status: str, fetched: int, new: int, sent: int, errors: str | None) -> None:

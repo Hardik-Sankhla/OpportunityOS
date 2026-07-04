@@ -144,3 +144,14 @@ def test_pipeline_deduplication(mock_dependencies):
     
     # We fetched 4, but all were deduped.
     assert update_call[0][1][2] == 4  # items_fetched
+
+
+def test_pipeline_db_insertion_duplicates(mock_dependencies):
+    # Simulate DB returning 0 for duplicate records (meaning they were skipped by ON CONFLICT)
+    mock_dependencies["db"].execute.return_value = 0
+    mock_dependencies["db"].url_hash_exists.return_value = False
+    
+    run_pipeline()
+    
+    # We check that it runs successfully and execute is called to insert
+    assert mock_dependencies["db"].execute.call_count > 0
