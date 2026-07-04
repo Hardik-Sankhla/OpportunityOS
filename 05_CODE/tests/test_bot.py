@@ -29,6 +29,7 @@ from bot import (
     command_building,
     command_applied,
     command_won,
+    command_stats,
     command_help
 )
 
@@ -260,3 +261,22 @@ async def test_command_won_success(mock_update_context, mock_db):
     await command_won(update, context)
     update.message.reply_text.assert_called_once_with("✅ Marked as won opportunity 50.")
     assert mock_db.execute.call_count == 2
+
+
+@pytest.mark.asyncio
+async def test_command_stats_success(mock_update_context, mock_db):
+    update, context = mock_update_context
+    mock_db.fetch_one.side_effect = [
+        {"1": 1},
+        {"total_found": 100, "total_saved": 10, "total_building": 5, "total_applied": 2, "total_won": 1},
+        {"source": "github", "signal_count": 8}
+    ]
+    await command_stats(update, context)
+    update.message.reply_html.assert_called_once()
+    call_args = update.message.reply_html.call_args[0][0]
+    assert "Opportunities found: 100" in call_args
+    assert "Opportunities saved: 10" in call_args
+    assert "Opportunities built: 5" in call_args
+    assert "Applications: 2" in call_args
+    assert "Wins: 1" in call_args
+    assert "Top source: github" in call_args

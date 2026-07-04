@@ -30,7 +30,7 @@
 | **Mission** | Discover valuable opportunities for builders. Deliver them to Telegram. Every day. |
 | **Current Phase** | Production MVP Live |
 | **Current Milestone** | First Successful End-to-End OpportunityOS Execution |
-| **North Star Metric** | Daily digest delivered automatically for 7 consecutive days (Success Criterion S1) |
+| **North Star Metric** | Outcome Rate: (outcome_building + outcome_applied + outcome_won) / opportunities_delivered |
 | **Last Updated** | 2026-07-04 |
 | **Project Status** | 🚀 Production MVP Live |
 | **Architecture Freeze** | ✅ Active since 2026-07-04 |
@@ -343,7 +343,8 @@ None currently.
 | 4 | Rotate exposed credentials (.env updates) | [/] In Progress | CTO | Step 3 | 10m |
 | 5 | Verify Telegram Bot service commands | ✅ Done | CTO | Step 4 | 15m |
 | 6 | Generate First Deployment Report | ✅ Done | CTO | Step 5 | 10m |
-| 7 | Deploy and verify interactive signals (/building, /applied, /won) | 🔴 Now | CTO | Step 6 | 15m |
+| 7 | Deploy and verify interactive signals (/building, /applied, /won) | ✅ Done | CTO | Step 6 | 15m |
+| 8 | Deploy and verify outcomes analytics (/stats command & outcomes.py) | 🔴 Now | CTO | Step 7 | 15m |
 
 ---
 
@@ -441,6 +442,7 @@ Logs from docker compose up
 
 | Date | Change | Reason | Impact |
 |------|--------|--------|--------|
+| 2026-07-04 | Implemented Outcome Analytics Engine and /stats command | Complete Sprint 2.1 feedback loop analysis and weekly reports | Learning layer established |
 | 2026-07-04 | Implemented interactive feedback commands and test coverage | Complete the Feedback Intelligence Layer (Sprint 2) supporting /building, /applied, /won | Feedback features live |
 | 2026-07-04 | Added `BUGFIX_001_DUPLICATE_OPPORTUNITIES.md` and patched pipeline | Resolve unique constraint violation errors on duplicate opportunity inserts | Integration testing fix |
 | 2026-07-04 | Added UI_AUDIT.md | Capture future OpportunityOS Terminal design language and dashboard concepts | No MVP functionality affected. Future Phase 2+ reference |
@@ -486,6 +488,7 @@ Logs from docker compose up
 
 | Date | Version | Milestone | Results |
 |------|---------|-----------|---------|
+| 2026-07-04 | v0.2.0 | Feedback Intelligence | Implemented outcome analytics engine, weekly report generator, and Telegram /stats command |
 | 2026-07-04 | v0.1.0 | First Successful End-to-End OpportunityOS Execution | Fetched opportunities, stored in DB, generated scores, delivered Telegram digest, passed integration tests |
 
 ---

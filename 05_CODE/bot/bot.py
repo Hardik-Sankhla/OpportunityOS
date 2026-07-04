@@ -236,6 +236,64 @@ async def command_won(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     await _handle_feedback(update, context, "won")
 
 
+@require_db
+async def command_stats(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """/stats — Displays core engagement and feedback analytics."""
+    if not is_authorized(update.effective_user.id):
+        return
+        
+    try:
+        # Get summary stats
+        stats = db_client.fetch_one("""
+            SELECT 
+                (SELECT COUNT(*) FROM opportunities) as total_found,
+                COUNT(*) FILTER (WHERE f.signal = 'saved') as total_saved,
+                COUNT(*) FILTER (WHERE f.signal = 'building') as total_building,
+                COUNT(*) FILTER (WHERE f.signal = 'applied') as total_applied,
+                COUNT(*) FILTER (WHERE f.signal = 'won') as total_won
+            FROM opportunity_feedback f;
+        """)
+        
+        if not stats:
+            stats = {
+                "total_found": 0,
+                "total_saved": 0,
+                "total_building": 0,
+                "total_applied": 0,
+                "total_won": 0
+            }
+            
+        # Get top source
+        top_source_row = db_client.fetch_one("""
+            SELECT 
+                o.source,
+                COUNT(*) as signal_count
+            FROM opportunity_feedback f
+            JOIN opportunities o ON f.opportunity_id = o.id
+            WHERE f.signal IN ('saved', 'building', 'applied', 'won')
+            GROUP BY o.source
+            ORDER BY signal_count DESC
+            LIMIT 1;
+        """)
+        
+        top_source = top_source_row["source"] if top_source_row else "None"
+        
+        text = (
+            "<b>OpportunityOS Analytics</b>\n\n"
+            f"Opportunities found: {stats.get('total_found') or 0}\n"
+            f"Opportunities saved: {stats.get('total_saved') or 0}\n"
+            f"Opportunities built: {stats.get('total_building') or 0}\n"
+            f"Applications: {stats.get('total_applied') or 0}\n"
+            f"Wins: {stats.get('total_won') or 0}\n\n"
+            f"Top source: {top_source}"
+        )
+        await update.message.reply_html(text)
+        
+    except Exception as e:
+        logger.error(f"Error in /stats: {e}")
+        await update.message.reply_text("Failed to retrieve statistics.")
+
+
 async def command_help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """/help — Static text. No dynamic generation."""
     if not is_authorized(update.effective_user.id):
@@ -250,6 +308,7 @@ async def command_help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         "/building &lt;id&gt; - Mark an opportunity as building\n"
         "/applied &lt;id&gt; - Mark an opportunity as applied\n"
         "/won &lt;id&gt; - Mark an opportunity as won\n"
+        "/stats - View core analytics and telemetry\n"
         "/help - Show this message\n"
     )
     await update.message.reply_html(text)
@@ -279,6 +338,7 @@ def main() -> None:
     application.add_handler(CommandHandler("building", command_building))
     application.add_handler(CommandHandler("applied", command_applied))
     application.add_handler(CommandHandler("won", command_won))
+    application.add_handler(CommandHandler("stats", command_stats))
     application.add_handler(CommandHandler("help", command_help))
 
     logger.info("Bot is starting polling...")
