@@ -14,9 +14,9 @@ Files are generated in strict dependency order. No step may be skipped.
 |------|------|--------|------------|
 | 1 | `db/init.sql` | ✅ Done | Nothing |
 | 2 | `scheduler/db/client.py` | ✅ Done | Step 1 |
-| 3 | `scheduler/schemas/opportunity.py` | ⬜ Next | Nothing |
-| 4 | `scheduler/fetchers/arxiv.py` | ⬜ | Steps 2, 3 |
-| 5 | `scheduler/fetchers/devpost.py` | ⬜ | Steps 2, 3 |
+| 3 | `scheduler/schemas/opportunity.py` | ✅ Done | Nothing |
+| 4 | `scheduler/fetchers/arxiv.py` | ✅ Done | Steps 2, 3 |
+| 5 | `scheduler/fetchers/devpost.py` | ⬜ Next | Steps 2, 3 |
 | 6 | `scheduler/fetchers/github_trending.py` | ⬜ | Steps 2, 3 |
 | 7 | `scheduler/fetchers/huggingface.py` | ⬜ | Steps 2, 3 |
 | 8 | `scheduler/scorer/score.py` | ⬜ | Step 3 |

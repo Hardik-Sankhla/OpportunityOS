@@ -4,11 +4,11 @@
 | Field | Value |
 |-------|-------|
 | **Current Phase** | 🏗️ Building — Week 1, Day 1 |
-| **Current Build Step** | Round 1, Step [3] of 14 — `scheduler/schemas/opportunity.py` |
-| **Current Priority** | Generate the canonical OpportunityRecord Python dataclass |
+| **Current Build Step** | Round 1, Step [5] of 14 — `scheduler/fetchers/devpost.py` |
+| **Current Priority** | Generate scheduler/fetchers/devpost.py |
 | **Current Blocker** | None |
-| **Next Artifact** | `05_CODE/scheduler/schemas/opportunity.py` |
-| **Project Health** | 🟢 Green — Architecture frozen, 2 steps complete, 24/24 tests passing |
+| **Next Artifact** | `05_CODE/scheduler/fetchers/devpost.py` |
+| **Project Health** | 🟢 Green — Architecture frozen, 4 steps complete |
 
 > If you only read one section, read this one. Then jump to Section 10 (Current Focus) and Section 13 (Quick AI Context).
 
@@ -89,9 +89,9 @@ Telegram API (outbound only)
 |------|------|--------|-------|-----------|---------|
 | 1 | `05_CODE/db/init.sql` | ✅ Implemented | N/A | ✅ `a00a14f` | Schema bootstrap — 4 tables, 3 indexes |
 | 2 | `scheduler/db/client.py` | ✅ Implemented | ✅ 24/24 | ✅ `bb21860` | psycopg2 pool, query helpers, dedup check |
-| 3 | `scheduler/schemas/opportunity.py` | ⬜ **Next** | — | — | Canonical OpportunityRecord dataclass |
-| 4 | `scheduler/fetchers/arxiv.py` | ⬜ | — | — | Arxiv RSS → OpportunityRecord |
-| 5 | `scheduler/fetchers/devpost.py` | ⬜ | — | — | Devpost RSS → OpportunityRecord |
+| 3 | `scheduler/schemas/opportunity.py` | ✅ Implemented | ✅ 42/42 | ✅ `72d2eb6` | Canonical OpportunityRecord dataclass |
+| 4 | `scheduler/fetchers/arxiv.py` | ✅ Implemented | ✅ 38/38 | ✅ `0d95e83` | Arxiv RSS → OpportunityRecord |
+| 5 | `scheduler/fetchers/devpost.py` | ⬜ **Next** | — | — | Devpost RSS → OpportunityRecord |
 | 6 | `scheduler/fetchers/github_trending.py` | ⬜ | — | — | GitHub API → OpportunityRecord |
 | 7 | `scheduler/fetchers/huggingface.py` | ⬜ | — | — | HF scrape → OpportunityRecord |
 | 8 | `scheduler/scorer/score.py` | ⬜ | — | — | Deterministic scoring formula |
@@ -102,7 +102,7 @@ Telegram API (outbound only)
 | 13 | `bot/Dockerfile` | ⬜ | — | — | Bot container image |
 | 14 | `docker-compose.yml` | ⬜ | — | — | 3-container orchestration |
 
-**Progress: 2/14 implementation files complete (14%)**
+**Progress: 4/14 implementation files complete (28%)**
 
 ### Files That Must NEVER Be Modified Without CTO Approval
 
@@ -119,14 +119,14 @@ Telegram API (outbound only)
 | Phase | Name | Objective | Progress | Exit Criteria |
 |-------|------|-----------|----------|---------------|
 | 0 | Governance | Specs, ADRs, protocol, memory system | ✅ 100% | All 5 specs approved — DONE |
-| 1 | Foundation | DB + schema layer working | 🟡 14% | `python run_pipeline.py` stores rows |
+| 1 | Foundation | DB + schema layer working | 🟡 28% | `python run_pipeline.py` stores rows |
 | 2 | Telegram Delivery | Daily digest sent automatically | ⬜ 0% | Digest delivered at 08:00 for 1 day |
 | 3 | Hardening | Runs unattended for 30 days | ⬜ 0% | 7-day clean run, all S1–S8 criteria met |
 | 4 | Polish | Tests, docs, keyword tuning | ⬜ 0% | Stranger can set up in ≤ 30 min |
 
 ### Phase 1 Remaining Deliverables
 
-- `scheduler/schemas/opportunity.py` ← **current**
+- `scheduler/fetchers/devpost.py` ← **current**
 - 4 fetchers (arxiv, devpost, github, huggingface)
 - `scheduler/scorer/score.py`
 - `scheduler/notifier/telegram.py`
@@ -171,6 +171,7 @@ Redis · Celery · RabbitMQ · Kafka · LangGraph · CrewAI · Kubernetes
 | R4 — cron doesn't fire in container | Low | High | Use supercronic, set TZ env var explicitly |
 | R5 — PostgreSQL volume data loss | Medium | High | Named Docker volume + weekly pg_dump |
 | R6 — Score formula poor quality | Medium | Medium | Week 4 manual audit + keyword tuning |
+| R7 — Source Data Quality Drift | High | High | Skip bad records. Log failure. Continue pipeline. Never crash fetch(). |
 
 ### Avoided Mistakes (by Protocol)
 
@@ -292,10 +293,11 @@ Digest floor:    40  (items below this are stored but never sent)
 | File | Tests | Status | Coverage |
 |------|-------|--------|---------|
 | `tests/test_db_client.py` | 24 | ✅ All passing | `db/client.py` — full public API |
-| `tests/test_fetchers.py` | 0 | ⬜ Not created | Planned: Step 4–7 |
+| `tests/test_schemas.py` | 42 | ✅ All passing | `schemas/opportunity.py` — validation |
+| `tests/test_arxiv.py` | 38 | ✅ All passing | `fetchers/arxiv.py` — fetcher contract |
+| `tests/test_devpost.py` | 0 | ⬜ Not created | Planned: Step 5 |
 | `tests/test_scorer.py` | 0 | ⬜ Not created | Planned: Step 8 |
 | `tests/test_notifier.py` | 0 | ⬜ Not created | Planned: Step 9 |
-| `tests/test_schemas.py` | 0 | ⬜ Not created | Planned: Step 3 |
 
 ### Test Rules (ANTIGRAVITY_PROTOCOL Rule 3)
 
@@ -314,12 +316,12 @@ None currently.
 
 | Field | Value |
 |-------|-------|
-| **Working on** | `05_CODE/scheduler/schemas/opportunity.py` |
-| **Why it matters** | Every fetcher must return this exact structure. Without it, each fetcher invents its own format — the pipeline breaks. This is the contract file. |
-| **Expected output** | Python `@dataclass` (or TypedDict) implementing OpportunityRecord exactly as specified in SCHEMA_SPEC.md Section 1.1 |
-| **Success criteria** | All 35 fields present, correct types, validation helpers, `from_dict()` + `to_db_tuple()` methods, tests passing |
-| **Spec section** | SCHEMA_SPEC.md Section 1.1–1.2 (canonical schema), Section 3.1 (validation rules) |
-| **Protocol rule** | ANTIGRAVITY_PROTOCOL.md Rule 10.2, Round 1, Step [3] |
+| **Working on** | `05_CODE/scheduler/fetchers/devpost.py` |
+| **Why it matters** | Devpost is the second source and first hackathon source. Validates that the schema works for events with deadlines. |
+| **Expected output** | `fetch() -> list[OpportunityRecord]` |
+| **Success criteria** | Fetcher Contract v1 compliance: No arguments, only returns OpportunityRecord list, never raises, never writes to DB. |
+| **Spec section** | SCHEMA_SPEC.md Section 2 (Source Mappings) |
+| **Protocol rule** | ANTIGRAVITY_PROTOCOL.md Rule 10.2, Round 1, Step [5] |
 
 ---
 
@@ -327,11 +329,9 @@ None currently.
 
 | # | Action | Priority | Owner | Depends On | Effort |
 |---|--------|----------|-------|-----------|--------|
-| 1 | Generate `scheduler/schemas/opportunity.py` | 🔴 Now | Antigravity | Nothing | 1–2h |
-| 2 | Generate `tests/test_schemas.py` | 🔴 Now | Antigravity | Step 3 | 1h |
-| 3 | Generate `scheduler/fetchers/arxiv.py` | 🔴 High | Antigravity | Steps 2, 3 | 2–3h |
-| 4 | Generate `scheduler/fetchers/devpost.py` | 🔴 High | Antigravity | Steps 2, 3 | 2h |
-| 5 | Generate `scheduler/fetchers/github_trending.py` | 🔴 High | Antigravity | Steps 2, 3 | 3h |
+| 1 | Generate `scheduler/fetchers/devpost.py` | 🔴 Now | Antigravity | Steps 2, 3 | 2h |
+| 2 | Generate `tests/test_devpost.py` | 🔴 Now | Antigravity | Step 5 | 1h |
+| 3 | Generate `scheduler/fetchers/github_trending.py` | 🔴 High | Antigravity | Steps 2, 3 | 3h |
 | 6 | Generate `scheduler/fetchers/huggingface.py` | 🔴 High | Antigravity | Steps 2, 3 | 3–4h |
 | 7 | Generate `scheduler/scorer/score.py` | 🟡 After fetchers | Antigravity | Step 3 | 2h |
 | 8 | Set TELEGRAM_BOT_TOKEN in .env | 🟡 Before Step 9 | CTO | — | 5 min |
@@ -346,7 +346,7 @@ None currently.
 |-----------|-------|--------|-------|
 | **Overall** | 9/10 | 🟢 Green | Governance mature, execution started |
 | **Architecture** | 10/10 | 🟢 Green | Frozen, well-documented, 5 ADRs |
-| **Code** | 9/10 | 🟢 Green | 2/14 files, 24/24 tests passing |
+| **Code** | 9/10 | 🟢 Green | 4/14 files, 104/104 tests passing |
 | **Data** | 9/10 | 🟢 Green | Schema complete, constraints enforced at DB level |
 | **Documentation** | 10/10 | 🟢 Green | Specs, ADRs, memory files all initialized |
 | **Technical Debt** | Low | 🟢 Green | No known shortcuts taken |
@@ -373,8 +373,8 @@ None currently.
 ### Current Build Position
 
 ```
-Round 1, Step [3] of 14
-File to generate: 05_CODE/scheduler/schemas/opportunity.py
+Round 1, Step [5] of 14
+File to generate: 05_CODE/scheduler/fetchers/devpost.py
 ```
 
 ### Files to Read First (in order)
@@ -412,16 +412,15 @@ None. Build can continue immediately.
 ### Next Expected Artifact
 
 ```
-05_CODE/scheduler/schemas/opportunity.py
+05_CODE/scheduler/fetchers/devpost.py
 ```
 
 This file must:
-- Be a Python `@dataclass` (or TypedDict with validation)
-- Implement all 35 fields from SCHEMA_SPEC.md Section 1.1
-- Include `url_hash` generation (SHA-256 of canonical_url)
-- Include validation per SCHEMA_SPEC.md Section 3.1 (hard rules V01–V09)
-- Include `to_db_tuple()` for passing to `db.client.execute_returning()`
-- Include tests in `05_CODE/tests/test_schemas.py`
+- Follow Fetcher Contract v1
+- Implement `fetch() -> list[OpportunityRecord]`
+- Catch all exceptions, log failures, return [] on feed failure
+- Skip bad records and continue
+- Not hit the database or external APIS other than Devpost
 - Stay under 500 lines
 
 ---
@@ -449,6 +448,9 @@ This file must:
 | 2026-07-04 | `05_CODE/tests/test_db_client.py` committed | 24/24 tests passing | DB client verified |
 | 2026-07-04 | `PROJECT_STATE.md` created | CTO directive | AI handoff capability established |
 | 2026-07-04 | Technical Debt Register added | CTO directive | Debt tracking active from Day 1 |
+| 2026-07-04 | `05_CODE/scheduler/schemas/opportunity.py` committed | Round 1 Step [3] complete | Schema contract implemented |
+| 2026-07-04 | `05_CODE/scheduler/fetchers/arxiv.py` committed | Round 1 Step [4] complete | First fetcher (Arxiv) implemented |
+| 2026-07-04 | `test_arxiv.py` committed | Round 1 Step [4] complete | Tested fetcher edge cases |
 
 ---
 
