@@ -440,6 +440,7 @@ Logs from docker compose up
 
 | Date | Change | Reason | Impact |
 |------|--------|--------|--------|
+| 2026-07-04 | Added UI_AUDIT.md | Capture future OpportunityOS Terminal design language and dashboard concepts | No MVP functionality affected. Future Phase 2+ reference |
 | 2026-07-04 | Downgraded Docker base image to `python:3.12-slim` | Fix `python-telegram-bot` 20.8 runtime crash on Python 3.13 | Bot compatibility fix |
 | 2026-07-04 | Started Telegram Bot container and verified polling startup | Verification of command responses pending | Bot validation startup |
 | 2026-07-04 | Registered `psycopg2` dictionary adapters in client.py | Fix `can't adapt type 'dict'` runtime error on opportunities insertions | Runtime fix |
