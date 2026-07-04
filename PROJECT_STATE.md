@@ -3,12 +3,12 @@
 
 | Field | Value |
 |-------|-------|
-| **Current Phase** | 🧪 Integration Testing — Week 1, Day 1 |
-| **Current Build Step** | Database Idempotency (Bug #001) |
-| **Current Priority** | Rebuild container with idempotency fix and test end-to-end |
+| **Current Phase** | 🚀 Production MVP Live |
+| **Current Build Step** | Production Ingestion Running (v0.1.0) |
+| **Current Priority** | Complete post-deployment credential rotation |
 | **Current Blocker** | *None* |
-| **Next Artifact** | Bugfix Document (`BUGFIX_001_DUPLICATE_OPPORTUNITIES.md`) |
-| **Project Health** | 🟢 Green — Code builds, DB schema and bot are stable. |
+| **Next Artifact** | *None* |
+| **Project Health** | 🟢 Green — Ingestion and bot verified healthy under Python 3.12! |
 
 > If you only read one section, read this one. Then jump to Section 10 (Current Focus) and Section 13 (Quick AI Context).
 
@@ -28,11 +28,11 @@
 | **Project Name** | OpportunityOS |
 | **Vision** | Every builder wakes up knowing the best opportunity available today |
 | **Mission** | Discover valuable opportunities for builders. Deliver them to Telegram. Every day. |
-| **Current Phase** | Integration Testing |
-| **Current Milestone** | Week 1 — Pipeline Integration |
+| **Current Phase** | Production MVP Live |
+| **Current Milestone** | First Successful End-to-End OpportunityOS Execution |
 | **North Star Metric** | Daily digest delivered automatically for 7 consecutive days (Success Criterion S1) |
 | **Last Updated** | 2026-07-04 |
-| **Project Status** | 🧪 Integration Testing |
+| **Project Status** | 🚀 Production MVP Live |
 | **Architecture Freeze** | ✅ Active since 2026-07-04 |
 | **Repo Location** | `d:\github\OpportunityOS\` |
 | **Git Branch** | `main` |
@@ -480,5 +480,12 @@ Logs from docker compose up
 
 ---
 
-*This file is the memory of OpportunityOS. Keep it honest. Keep it current. Keep it under 1000 lines.*
+## Section 16: Milestones / Release History
 
+| Date | Version | Milestone | Results |
+|------|---------|-----------|---------|
+| 2026-07-04 | v0.1.0 | First Successful End-to-End OpportunityOS Execution | Fetched opportunities, stored in DB, generated scores, delivered Telegram digest, passed integration tests |
+
+---
+
+*This file is the memory of OpportunityOS. Keep it honest. Keep it current. Keep it under 1000 lines.*
