@@ -13,8 +13,8 @@ Files are generated in strict dependency order. No step may be skipped.
 | Step | File | Status | Depends On |
 |------|------|--------|------------|
 | 1 | `db/init.sql` | ✅ Done | Nothing |
-| 2 | `scheduler/db/client.py` | ⬜ Next | Step 1 |
-| 3 | `scheduler/schemas/opportunity.py` | ⬜ | Nothing |
+| 2 | `scheduler/db/client.py` | ✅ Done | Step 1 |
+| 3 | `scheduler/schemas/opportunity.py` | ⬜ Next | Nothing |
 | 4 | `scheduler/fetchers/arxiv.py` | ⬜ | Steps 2, 3 |
 | 5 | `scheduler/fetchers/devpost.py` | ⬜ | Steps 2, 3 |
 | 6 | `scheduler/fetchers/github_trending.py` | ⬜ | Steps 2, 3 |

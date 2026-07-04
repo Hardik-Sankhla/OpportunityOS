@@ -426,7 +426,18 @@ This file must:
 
 ---
 
-## Section 14: Changelog
+## Section 14a: Technical Debt Register
+
+> Populated when shortcuts are taken under time pressure. Empty is good. Honest is required.
+> Review weekly. Every item needs a planned resolution date.
+
+| ID | Debt | Severity | File | Introduced | Planned Resolution |
+|----|------|----------|------|------------|-------------------|
+| — | *None registered* | — | — | — | — |
+
+---
+
+## Section 15: Changelog
 
 | Date | Change | Reason | Impact |
 |------|--------|--------|--------|
@@ -437,7 +448,9 @@ This file must:
 | 2026-07-04 | `05_CODE/scheduler/db/client.py` committed | Round 1 Step [2] complete | DB layer usable by pipeline |
 | 2026-07-04 | `05_CODE/tests/test_db_client.py` committed | 24/24 tests passing | DB client verified |
 | 2026-07-04 | `PROJECT_STATE.md` created | CTO directive | AI handoff capability established |
+| 2026-07-04 | Technical Debt Register added | CTO directive | Debt tracking active from Day 1 |
 
 ---
 
 *This file is the memory of OpportunityOS. Keep it honest. Keep it current. Keep it under 1000 lines.*
+
