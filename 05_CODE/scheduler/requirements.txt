@@ -1,0 +1,9 @@
+# scheduler/requirements.txt
+# Pinned minor versions — patch versions allowed to float for security fixes.
+# Update this file when a new dependency is added (requires CTO note in integration_log.md).
+
+psycopg2-binary>=2.9,<3
+feedparser>=6.0,<7
+httpx>=0.27,<1          # used by github and huggingface fetchers (Steps 6, 7)
+beautifulsoup4>=4.12,<5 # used by huggingface fetcher (Step 7)
+python-telegram-bot>=20,<21  # used by notifier and bot (Steps 9, 11)
