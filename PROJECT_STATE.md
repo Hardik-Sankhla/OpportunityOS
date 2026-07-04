@@ -340,7 +340,7 @@ None currently.
 | 1 | Database Startup (`docker compose up -d db`) | ✅ Done | CTO | - | 5m |
 | 2 | Scheduler Run (`docker compose up scheduler`) | ✅ Done | CTO | Step 1 | 15m |
 | 3 | Verification of logs & database entries | ✅ Done | CTO | Step 2 | 10m |
-| 4 | Rotate exposed credentials (.env updates) | 🔴 Now | CTO | Step 3 | 10m |
+| 4 | Rotate exposed credentials (.env updates) | [/] In Progress | CTO | Step 3 | 10m |
 | 5 | Verify Telegram Bot service commands | 🔴 Now | CTO | Step 4 | 15m |
 
 ---
@@ -439,6 +439,8 @@ Logs from docker compose up
 
 | Date | Change | Reason | Impact |
 |------|--------|--------|--------|
+| 2026-07-04 | Downgraded Docker base image to `python:3.12-slim` | Fix `python-telegram-bot` 20.8 runtime crash on Python 3.13 | Bot compatibility fix |
+| 2026-07-04 | Started Telegram Bot container and verified polling startup | Verification of command responses pending | Bot validation startup |
 | 2026-07-04 | Registered `psycopg2` dictionary adapters in client.py | Fix `can't adapt type 'dict'` runtime error on opportunities insertions | Runtime fix |
 | 2026-07-04 | Corrected `supercronic` SHA1 checksum in scheduler/Dockerfile | Resolve build failure due to checksum mismatch | Build validation fix |
 | 2026-07-04 | Aligned `httpx` to `>=0.26,<0.27` in requirements | Resolve build dependency conflict with python-telegram-bot | Build validation fix |
