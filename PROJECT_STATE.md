@@ -4,11 +4,11 @@
 | Field | Value |
 |-------|-------|
 | **Current Phase** | 🏗️ Building — Week 1, Day 1 |
-| **Current Build Step** | Round 1, Step [7] of 14 — `scheduler/fetchers/huggingface.py` |
-| **Current Priority** | Generate scheduler/fetchers/huggingface.py |
+| **Current Build Step** | Round 1, Step [8] Prep — `ADR_009_scoring_strategy.md` |
+| **Current Priority** | Generate ADR 009 |
 | **Current Blocker** | None |
-| **Next Artifact** | `05_CODE/scheduler/fetchers/huggingface.py` |
-| **Project Health** | 🟢 Green — Architecture frozen, 6 steps complete |
+| **Next Artifact** | `02_DECISIONS/architecture/ADR_009_scoring_strategy.md` |
+| **Project Health** | 🟢 Green — Architecture frozen, Acquisition Layer audited |
 
 > If you only read one section, read this one. Then jump to Section 10 (Current Focus) and Section 13 (Quick AI Context).
 
@@ -35,8 +35,8 @@
 | **Project Status** | 🏗️ Building |
 | **Architecture Freeze** | ✅ Active since 2026-07-04 |
 | **Repo Location** | `d:\github\OpportunityOS\` |
-| **Git Branch** | `master` |
-| **Commits** | 3 |
+| **Git Branch** | `main` |
+| **Commits** | 5 |
 
 ---
 
@@ -93,7 +93,7 @@ Telegram API (outbound only)
 | 4 | `scheduler/fetchers/arxiv.py` | ✅ Implemented | ✅ 38/38 | ✅ `0d95e83` | Arxiv RSS → OpportunityRecord |
 | 5 | `scheduler/fetchers/devpost.py` | ✅ Implemented | ✅ 18/18 | ✅ `82f2b64` | Devpost RSS → OpportunityRecord |
 | 6 | `scheduler/fetchers/github_trending.py` | ✅ Implemented | ✅ 21/21 | ✅ `6e27f79` | GitHub API → OpportunityRecord |
-| 7 | `scheduler/fetchers/huggingface.py` | ⬜ **Next** | — | — | HF scrape → OpportunityRecord |
+| 7 | `scheduler/fetchers/huggingface.py` | ✅ Implemented | ✅ 16/16 | ✅ `44c2219` | HF scrape → OpportunityRecord |
 | 8 | `scheduler/scorer/score.py` | ⬜ | — | — | Deterministic scoring formula |
 | 9 | `scheduler/notifier/telegram.py` | ⬜ | — | — | Format + send digest |
 | 10 | `scheduler/run_pipeline.py` | ⬜ | — | — | Orchestrator: fetch→score→store→send |
@@ -102,7 +102,7 @@ Telegram API (outbound only)
 | 13 | `bot/Dockerfile` | ⬜ | — | — | Bot container image |
 | 14 | `docker-compose.yml` | ⬜ | — | — | 3-container orchestration |
 
-**Progress: 6/14 implementation files complete (43%)**
+**Progress: 7/14 implementation files complete (50%)**
 
 ### Files That Must NEVER Be Modified Without CTO Approval
 
@@ -119,14 +119,14 @@ Telegram API (outbound only)
 | Phase | Name | Objective | Progress | Exit Criteria |
 |-------|------|-----------|----------|---------------|
 | 0 | Governance | Specs, ADRs, protocol, memory system | ✅ 100% | All 5 specs approved — DONE |
-| 1 | Foundation | DB + schema layer working | 🟡 43% | `python run_pipeline.py` stores rows |
+| 1 | Foundation | DB + schema layer working | 🟡 50% | `python run_pipeline.py` stores rows |
 | 2 | Telegram Delivery | Daily digest sent automatically | ⬜ 0% | Digest delivered at 08:00 for 1 day |
 | 3 | Hardening | Runs unattended for 30 days | ⬜ 0% | 7-day clean run, all S1–S8 criteria met |
 | 4 | Polish | Tests, docs, keyword tuning | ⬜ 0% | Stranger can set up in ≤ 30 min |
 
 ### Phase 1 Remaining Deliverables
 
-- `scheduler/fetchers/huggingface.py` ← **current**
+- `FETCHER_AUDIT.md` ← **current**
 - 4 fetchers (arxiv, devpost, github, huggingface)
 - `scheduler/scorer/score.py`
 - `scheduler/notifier/telegram.py`
@@ -299,7 +299,7 @@ Digest floor:    40  (items below this are stored but never sent)
 | `tests/test_arxiv.py` | 38 | ✅ All passing | `fetchers/arxiv.py` — fetcher contract |
 | `tests/test_devpost.py` | 18 | ✅ All passing | `fetchers/devpost.py` — fetcher contract |
 | `tests/test_github_trending.py` | 21 | ✅ All passing | `fetchers/github_trending.py` — fetcher contract |
-| `tests/test_huggingface.py` | 0 | ⬜ Not created | Planned: Step 7 |
+| `tests/test_huggingface.py` | 16 | ✅ All passing | `fetchers/huggingface.py` — fetcher contract |
 | `tests/test_scorer.py` | 0 | ⬜ Not created | Planned: Step 8 |
 | `tests/test_notifier.py` | 0 | ⬜ Not created | Planned: Step 9 |
 
@@ -320,12 +320,12 @@ None currently.
 
 | Field | Value |
 |-------|-------|
-| **Working on** | `05_CODE/scheduler/fetchers/huggingface.py` |
-| **Why it matters** | Hugging Face is critical for AI models, datasets, and spaces. Validates HTML scraping without browser automation. |
-| **Expected output** | `fetch() -> list[OpportunityRecord]` |
-| **Success criteria** | Fetcher Contract v1 compliance. Scraping logic is isolated. Gracefully returns [] when UI changes break selectors. |
-| **Spec section** | SCHEMA_SPEC.md Section 2 (Source Mappings), ADR_008 |
-| **Protocol rule** | ANTIGRAVITY_PROTOCOL.md Rule 10.2, Round 1, Step [7] |
+| **Working on** | `05_CODE/FETCHER_AUDIT.md` |
+| **Why it matters** | Ensures all fetchers strictly follow Fetcher Contract v1, normalizations, and pure behaviors before building the scoring engine. |
+| **Expected output** | `FETCHER_AUDIT.md` including a scorecard. |
+| **Success criteria** | Verifies network failures, normalization consistency, and purity rules (no scoring/storing/notifying). |
+| **Spec section** | ADR_006 |
+| **Protocol rule** | ANTIGRAVITY_PROTOCOL.md Rule 10.2, Milestone: Data Acquisition Layer Complete |
 
 ---
 
@@ -333,12 +333,9 @@ None currently.
 
 | # | Action | Priority | Owner | Depends On | Effort |
 |---|--------|----------|-------|-----------|--------|
-| 1 | Generate `scheduler/fetchers/huggingface.py` | 🔴 Now | Antigravity | Steps 2, 3 | 3h |
-| 2 | Generate `tests/test_huggingface.py` | 🔴 Now | Antigravity | Step 7 | 1h |
-| 3 | Create `FETCHER_AUDIT.md` | 🟡 After Step 7 | Antigravity | Steps 4–7 | 1h |
-| 6 | Generate `scheduler/fetchers/huggingface.py` | 🔴 High | Antigravity | Steps 2, 3 | 3–4h |
-| 7 | Generate `scheduler/scorer/score.py` | 🟡 After fetchers | Antigravity | Step 3 | 2h |
-| 8 | Set TELEGRAM_BOT_TOKEN in .env | 🟡 Before Step 9 | CTO | — | 5 min |
+| 1 | Create `ADR_009_scoring_strategy.md` | 🔴 Now | Antigravity | Audit | 30m |
+| 2 | Generate `scheduler/scorer/score.py` | 🔴 Next | Antigravity | Step 3, ADR 009 | 2h |
+| 3 | Set TELEGRAM_BOT_TOKEN in .env | 🟡 Before Step 9 | CTO | — | 5 min |
 | 9 | Generate `scheduler/notifier/telegram.py` | 🟡 After scorer | Antigravity | Steps 2, 3 | 2h |
 | 10 | Generate `scheduler/run_pipeline.py` | 🟡 After all above | Antigravity | Steps 2–9 | 2–3h |
 
@@ -350,7 +347,7 @@ None currently.
 |-----------|-------|--------|-------|
 | **Overall** | 9/10 | 🟢 Green | Governance mature, execution started |
 | **Architecture** | 10/10 | 🟢 Green | Frozen, well-documented, 5 ADRs |
-| **Code** | 9.5/10 | 🟢 Green | 6/14 files, 143/143 tests passing |
+| **Code** | 9.5/10 | 🟢 Green | 7/14 files, 159/159 tests passing |
 | **Data** | 9/10 | 🟢 Green | Schema complete, constraints enforced at DB level |
 | **Documentation** | 10/10 | 🟢 Green | Specs, ADRs, memory files all initialized |
 | **Technical Debt** | Low | 🟢 Green | No known shortcuts taken |
@@ -377,8 +374,8 @@ None currently.
 ### Current Build Position
 
 ```
-Round 1, Step [7] of 14
-File to generate: 05_CODE/scheduler/fetchers/huggingface.py
+Round 1, Step [AUDIT]
+File to generate: 05_CODE/FETCHER_AUDIT.md
 ```
 
 ### Files to Read First (in order)
@@ -416,16 +413,13 @@ None. Build can continue immediately.
 ### Next Expected Artifact
 
 ```
-05_CODE/scheduler/fetchers/huggingface.py
+02_DECISIONS/architecture/ADR_009_scoring_strategy.md
 ```
 
 This file must:
-- Follow Fetcher Contract v1
-- Use `httpx` and `BeautifulSoup` for HTML scraping (NO browser automation)
-- Isolate selectors and extraction logic
-- Map Models/Spaces to tool/use, Datasets to dataset/use
-- Catch scraping exceptions, log failures, return [] on feed failure
-- Stay under 500 lines
+- Document the exact deterministic scoring formula: recency(0-30) + popularity(0-30) + novelty(10) + relevance(0-20) + penalty(0/-10).
+- Forbid AI scoring, Embeddings, Vector search, and Semantic ranking for v1.
+- Outline how this will be implemented in `scheduler/scorer/score.py`.
 
 ---
 
@@ -461,6 +455,10 @@ This file must:
 | 2026-07-04 | `ADR_007_github_source_strategy.md` added | Architecture guardrail | Selected Search API |
 | 2026-07-04 | `05_CODE/scheduler/fetchers/github_trending.py` committed | Round 1 Step [6] complete | Third fetcher implemented |
 | 2026-07-04 | `test_github_trending.py` committed | Round 1 Step [6] complete | Tested API and token logic |
+| 2026-07-04 | `ADR_008_huggingface_scraping_strategy.md` added | Architecture guardrail | Approved HTML scraping |
+| 2026-07-04 | `05_CODE/scheduler/fetchers/huggingface.py` committed | Round 1 Step [7] complete | Fourth fetcher implemented |
+| 2026-07-04 | `test_huggingface.py` committed | Round 1 Step [7] complete | Tested isolated selectors |
+| 2026-07-04 | `05_CODE/FETCHER_AUDIT.md` added | Acquisition Layer milestone | Verified contract compliance |
 
 ---
 
